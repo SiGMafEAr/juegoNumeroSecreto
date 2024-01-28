@@ -159,13 +159,29 @@ mostrarListaInversa()*/
     console.log(`el numero mas pequeño de la lista es ${Math.min(...lista)}, el numero ma grande la lista es ${Math.max(...lista)}`)
 }
 //Crea una función que devuelva la suma de todos los elementos en una lista.
-/*function promedio(lista){
+/*function suma(lista){
     return lista.reduce((x, y) => x + y);
 }*/
 //Crea una función que devuelva la posición en la lista donde se encuentra un elemento pasado como parámetro, o -1 si no existe en la lista.
-
+/*function encontrarElemento(elemento){
+    let posicion = -1;
+    for(let i = 0; i < listaElementos.length; i++){
+        if(listaElementos[i] === elemento){
+            posicion = i;
+        }
+    }
+    return posicion;
+}*/
 //Crea una función que reciba dos listas de números del mismo tamaño y devuelva una nueva lista con la suma de los elementos uno a uno.
-
+/*function sumaListas(lista1, lista2){
+    let listaSuma = [];
+    if(lista1.length == lista2.length){ 
+        for(let i = 0; i < lista1.length; i++){
+            listaSuma.push(lista1[i] + lista2[i]);
+        }
+    }
+    return listaSuma;
+}*/
 //Crea una función que reciba una lista de números y devuelva una nueva lista con el cuadrado de cada número.
 /*function doble(lista){
     let listaDeDobles = [];
