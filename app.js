@@ -12,8 +12,8 @@ function asignarTextoElemento(elemento, texto){
 
 function verificarIntento(){
     let numeroDeUsuario = parseInt(document.getElementById(`valorDeUsuario`).value);
-    if (numeroDeUsuario != "") {
-        if(numeroSecreto === numeroDeUsuario){
+    if (!isNaN(numeroDeUsuario)) {
+        if(numeroSecreto === numeroDeUsuario) {
             cambiarEstatusBotones();
             asignarTextoElemento(`p`, `¡Acertaste el numero en ${intentos} ${(intentos == 1) ? " oportunidad" : " oportunidades"}!`);
         }
@@ -23,9 +23,9 @@ function verificarIntento(){
             intentos++;
             limpiarCaja();
         }
-    } else [
-        asignarTextoElemento(`p`, `Escribe un numero por favor`);
-    ]
+    } else {
+        asignarTextoElemento(`p`, `Escribe un numero por favor!`);
+    }
     return;
 }
 
