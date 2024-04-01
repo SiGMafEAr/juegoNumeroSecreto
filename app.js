@@ -1,47 +1,57 @@
 let numeroSecreto = 0;
 let intentos = 0;
+let intentosMaximos = 5;
 let listaNumerosSorteados = [];
 let numeroMaximo = 10;
+let wins = 0;
 condicionesIniciales();
 
-function asignarTextoElemento(elemento, texto){
-    let titulo = document.querySelector(elemento);
-    titulo.innerHTML= texto;
-    return;
+function asignarTextoElemento(elemento, texto) {
+    document.querySelector(elemento).textContent = texto;
 }
 
-function verificarIntento(){
+function verificarIntento() {
     let numeroDeUsuario = parseInt(document.getElementById(`valorDeUsuario`).value);
-    if (!isNaN(numeroDeUsuario)) {
-        if(numeroSecreto === numeroDeUsuario) {
-            cambiarEstatusBotones();
-            asignarTextoElemento(`p`, `¡Acertaste el numero en ${intentos} ${(intentos == 1) ? " oportunidad" : " oportunidades"}!`);
+    let casi = intentosMaximos - 2;
+    if (intentos < intentosMaximos) {
+        if (intentos === casi) {
+            changeStatusImage("./img/ahhh.png");
         }
-        else {
-            //uso de operador ternario para dar indicaciones al usuario si es menor o mayor el número secreto, respecto al número dado
-            asignarTextoElemento(`p`, `El número secreto es ${(numeroDeUsuario > numeroSecreto) ? "menor" : "mayor"}`);
+        if (!isNaN(numeroDeUsuario)) {
+            if (numeroSecreto === numeroDeUsuario) {
+                cambiarEstatusBotones();
+                wins++;
+                changeStatusImage("./img/winner.png");
+                asignarTextoElemento(`p`, `¡Acertaste el numero en ${intentos} ${(intentos == 1) ? " oportunidad" : " oportunidades"}!`);
+
+            } else {
+                asignarTextoElemento(`p`, `El número secreto es ${(numeroDeUsuario > numeroSecreto) ? "menor" : "mayor"}`);
+            }
             intentos++;
-            limpiarCaja();
+        } else {
+            asignarTextoElemento(`p`, `Escribe un numero por favor!`);
         }
     } else {
-        asignarTextoElemento(`p`, `Escribe un numero por favor!`);
+        changeStatusImage("./img/lose.png");
+        cambiarEstatusBotones();
+        asignarTextoElemento(`p`, `¡Se acabaron las oportunidades!`);
     }
-    return;
+    limpiarCaja();
 }
 
-function limpiarCaja(){
+function limpiarCaja() {
     document.querySelector(`#valorDeUsuario`).value = ``;
 }
 
-function generarNumeroSecreto(){
+function generarNumeroSecreto() {
     let numeroGenerado = Math.floor(Math.random() * numeroMaximo) + 1;
-    if (listaNumerosSorteados.length == numeroMaximo){
-        cambiarEstatusBotones();
-        listaNumerosSorteados = [];
+    if (listaNumerosSorteados.length === numeroMaximo) {
+        if (wins === numeroMaximo) {
+            changeStatusImage("./img/win.png");
+        }
         asignarTextoElemento(`p`, `Ya fueron sorteados todos los numeros posibles`);
+        cambiarEstatusBotones();
     } else {
-        console.log(numeroGenerado);
-        console.log(listaNumerosSorteados);
         if (listaNumerosSorteados.includes(numeroGenerado)) {
             return generarNumeroSecreto ();
         } else {
@@ -51,23 +61,27 @@ function generarNumeroSecreto(){
     }
 }
 
-function reiniciarJuego(){
-    //limpiamos la caja
+function reiniciarJuego() {
     limpiarCaja();
-    //reiniciamos las condiciones iniciales, textos, numero secreto nuevo e intentos a 1
     condicionesIniciales();
-    //cambiamos la activacion de los botones
     cambiarEstatusBotones();
 }
 
-function condicionesIniciales(){
+function condicionesIniciales() {
     asignarTextoElemento(`h1`, `Juego del número secreto`);
     asignarTextoElemento(`p`, `Indica un número del 1 al ${numeroMaximo}`);
     numeroSecreto = generarNumeroSecreto();
     intentos = 1;
+    wins = 0;
+    changeStatusImage("./img/think.png");
 }
 
-function cambiarEstatusBotones(){
+function changeStatusImage(image) {
+    var imag = document.getElementById("statusIMG");
+    imag.src = image;
+}
+
+function cambiarEstatusBotones() {
     document.querySelector(`#reiniciar`).disabled = !document.querySelector(`#reiniciar`).disabled;
     document.querySelector(`#intento`).disabled = !document.querySelector(`#intento`).disabled;
 }
