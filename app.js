@@ -1,48 +1,52 @@
 let numeroSecreto = 0;
-let intentos = 0;
+let intentos = 1;
 let intentosMaximos = 5;
 let listaNumerosSorteados = [];
+let wins = 0;
 let numeroMaximo = 10;
-condicionesIniciales();
-
-function asignarTextoElemento(elemento, texto) {
-    document.querySelector(elemento).textContent = texto;
-}
 
 function verificarIntento() {
-    let numeroDeUsuario = parseInt(document.getElementById('valorDeUsuario').value);
-    let casi = intentosMaximos - 2;
-    if (intentos < intentosMaximos) {
-        if (intentos === casi) {
+    let numeroDeUsuario = parseInt(document.getElementById(`valorDeUsuario`).value);
+    if (isNaN(numeroDeUsuario)) {
+        asignarTextoElemento(`p`, `¡Escribe un numero por favor!`);
+        changeStatusImage("./img/mmm.png")
+    } else {
+        if (intentos === intentosMaximos - 2) {
             changeStatusImage("./img/ahhh.png");
         }
-        if (!isNaN(numeroDeUsuario)) {
-            if (numeroSecreto === numeroDeUsuario) {
-                ganarJuego();
+        if (numeroSecreto === numeroDeUsuario) {
+            wins++;
+            cambiarEstatusBotones();
+            if (wins === numeroMaximo) {
+                stopGame("./img/win.png", `p`, `¡Acertaste todos los numeros`, false);
             } else {
-                intentos++;
-                mostrarMensaje(`El número secreto es ${(numeroDeUsuario > numeroSecreto) ? "menor" : "mayor"}`);
+                changeStatusImage("./img/winner.png");
+                asignarTextoElemento(`p`, `¡Acertaste en ${intentos} ${(intentos == 1) ? " oportunidad" : " oportunidades"}!`);
             }
         } else {
-            mostrarMensaje(`Escribe un número, por favor.`);
+            asignarTextoElemento(`p`, `El número secreto es ${(numeroDeUsuario > numeroSecreto) ? "menor" : "mayor"}`);
+            if (intentos === intentosMaximos) {
+                stopGame("./img/lose.png", `p`, `¡Se acabo el juego!`, true);
+            }
+            intentos++;
         }
-    } else {
-        perderJuego();
     }
     limpiarCaja();
 }
 
-function limpiarCaja() {
-    document.getElementById('valorDeUsuario').value = '';
+function stopGame(image, elemento, mensaje, condicion) {
+    changeStatusImage(image);
+    if (condicion) {
+        cambiarEstatusBotones();
+    }
+    asignarTextoElemento(elemento, mensaje);
+    listaNumerosSorteados = [];
+    wins = 0;
+
 }
 
 function generarNumeroSecreto() {
     let numeroGenerado;
-    if (listaNumerosSorteados.length === numeroMaximo) {
-        mostrarMensaje(`Ya fueron sorteados todos los números posibles.`);
-        cambiarEstatusBotones();
-        return;
-    }
     do {
         numeroGenerado = Math.floor(Math.random() * numeroMaximo) + 1;
     } while (listaNumerosSorteados.includes(numeroGenerado));
@@ -57,8 +61,8 @@ function reiniciarJuego() {
 }
 
 function condicionesIniciales() {
-    asignarTextoElemento('h1', 'Juego del número secreto');
-    asignarTextoElemento('p', `Indica un número del 1 al ${numeroMaximo}`);
+    asignarTextoElemento(`h1`, `Juego del número secreto`);
+    asignarTextoElemento(`p`, `Indica un número del 1 al ${numeroMaximo}`);
     numeroSecreto = generarNumeroSecreto();
     intentos = 1;
     changeStatusImage("./img/think.png");
@@ -69,27 +73,19 @@ function changeStatusImage(image) {
 }
 
 function cambiarEstatusBotones() {
-    let reiniciarBtn = document.getElementById('reiniciar');
-    let intentoBtn = document.getElementById('intento');
-    reiniciarBtn.disabled = !reiniciarBtn.disabled;
-    intentoBtn.disabled = !intentoBtn.disabled;
+    document.querySelector(`#reiniciar`).disabled = !document.querySelector(`#reiniciar`).disabled;
+    document.querySelector(`#intento`).disabled = !document.querySelector(`#intento`).disabled;
 }
 
-function ganarJuego() {
-    cambiarEstatusBotones();
-    changeStatusImage("./img/winner.png");
-    mostrarMensaje(`¡Acertaste en ${intentos} ${(intentos === 1) ? "oportunidad" : "oportunidades"}!`);
+function limpiarCaja() {
+    document.querySelector(`#valorDeUsuario`).value = ``;
 }
 
-function perderJuego() {
-    changeStatusImage("./img/lose.png");
-    cambiarEstatusBotones();
-    mostrarMensaje(`¡Se acabó el juego!`);
+function asignarTextoElemento(elemento, texto) {
+    document.querySelector(elemento).textContent = texto;
 }
 
-function mostrarMensaje(mensaje) {
-    asignarTextoElemento(`p`, mensaje);
-}
+condicionesIniciales();
 
 /////////////////////////////////////////////desafios 1/////////////////////////////////////////////
 //Crear una función que muestre "¡Hola, mundo!" en la consola.
